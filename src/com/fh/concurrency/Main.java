@@ -128,7 +128,8 @@ public class Main {
                             final String source = energySources[i];
                             Thread chargeThread = new Thread(() -> {
                                 System.out.println("Charging with " + source + " energy. Amount: " + chargeAmount);
-                                battery.startCharging(chargeAmount, source);
+                                battery.startCharging(chargeAmount, source); // Start the charging thread
+                                // The logChargingActivity method will be called inside the Battery class via the ChargingThread
                             });
                             chargeThread.start();
                             try {
@@ -145,7 +146,7 @@ public class Main {
                         for (double useAmount : useAmounts) {
                             Thread usageThread = new Thread(() -> {
                                 System.out.println("Attempting to use " + useAmount + " energy.");
-                                battery.startUsingEnergy(useAmount);
+                                battery.startUsingEnergy(useAmount);  // Start the usage thread
                             });
                             usageThread.start();
                             try {
@@ -155,6 +156,7 @@ public class Main {
                             }
                         }
                         break;
+
                     case 0: // Exit
                         running = false;
                         System.out.println("Exiting the system. Goodbye!");

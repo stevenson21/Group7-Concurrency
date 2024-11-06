@@ -1,6 +1,7 @@
 package com.fh.concurrency;
 
-
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
 
@@ -32,6 +33,8 @@ public class Battery {
             try {
                 currentCharge = Math.min(capacity, currentCharge + amount);
                 System.out.println("Charging from " + source + ". Current charge: " + currentCharge);
+                // Log the charging activity to a log file with the equipment name
+                logChargingActivity(source, amount);
             } finally {
                 lock.unlock();
             }
@@ -74,5 +77,21 @@ public class Battery {
 
     public void startUsingEnergy(double amount) {
         new UsageThread(amount).start();
+    }
+
+    // Method to log the charging activity to a file, including the equipment name
+    private void logChargingActivity(String source, double amount) {
+        String homeDirectory = System.getProperty("user.home");
+        String logDirectory = "energy_log.txt"; // Simple log file in the home directory
+        Path logFilePath = Paths.get(homeDirectory, logDirectory);
+
+        try {
+            Files.write(logFilePath, 
+                (source + " charged by " + amount + " units at " + System.currentTimeMillis() + "\n").getBytes(),
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            System.out.println("Charging activity logged to " + logFilePath.toString());
+        } catch (IOException e) {
+            System.err.println("Error logging charging activity: " + e.getMessage());
+        }
     }
 }
