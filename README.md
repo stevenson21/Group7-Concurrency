@@ -26,8 +26,9 @@ This project implements a log search and battery management system for an energy
 ## Installation
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/log-searcher.git
-    cd log-searcher
+    Compile the project using Eclipse IDE.
+    Run the main class (Main.java) to simulate the energy management system.
+    Use the console interface to interact with the system and search for logs.
     ```
 
 2. **Set up the project**:
@@ -65,22 +66,30 @@ The program also allows you to search for log files by equipment name (e.g., `So
     ```
 
 ### Charge the Battery
-The system can simulate charging the battery by accepting a charge amount and a source of energy (e.g., Solar, Wind, etc.).
-
+The system simulates charging the battery using multiple energy sources (e.g., Solar, Wind, Hydro, etc.). Each charging operation can run in a separate thread, allowing multiple sources to charge the battery concurrently. Each charging operation is also logged to a file (energy_log.txt) in the user's home directory, with details on the source and amount charged.
 **Example**:
-- Input:
+- Charging:
     ```
-    Enter amount to charge the battery: 100.5
-    Enter source of energy (e.g., Solar, Wind): Solar
+     EStarting multiple battery charging operations...
+    Charging with Solar energy. Amount: 100.0
+    Charging from Solar. Current charge: 100.0
+    Charging activity logged to /home/username/energy_log.txt
+    Charging with Wind energy. Amount: 200.0
+    Charging from Wind. Current charge: 300.0
+    Charging activity logged to /home/username/energy_log.txt
     ```
 
 ### Use Energy from the Battery
-The system also allows you to simulate using energy from the battery. The amount of energy used will be deducted from the battery's current charge.
+The system allows you to simulate energy usage from the battery, deducting the specified amount from the current charge. Usage requests also run in separate threads to handle multiple usage operations simultaneously, ensuring efficient use of resources with concurrency control.
 
 **Example**:
-- Input:
+- Usage::
     ```
-    Enter amount of energy to use from the battery: 50.0
+  Starting multiple battery usage operations...
+  Attempting to use 50.0 energy.
+  Used 50.0 energy. Remaining charge: 250.0
+  Attempting to use 75.0 energy.
+  Used 75.0 energy. Remaining charge: 175.0
     ```
 
 ## Concurrency
