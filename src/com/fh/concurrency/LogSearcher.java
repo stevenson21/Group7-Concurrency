@@ -1,42 +1,49 @@
 package com.fh.concurrency;
-
-
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class LogSearcher {
-    private String logDirectory;
-    private Metadata metadata;
-    private ExecutorService executorService;
+public class LogSearcher extends Thread {
+    private final String logDirectory;
+    private final Metadata metadata;
+    private final String searchCriteria;
+    private List<String> searchResults = new ArrayList<>();
 
-    public LogSearcher(String logDirectory, Metadata metadata) {
+    public LogSearcher(String logDirectory, Metadata metadata, String searchCriteria) {
         this.logDirectory = logDirectory;
         this.metadata = metadata;
-        this.executorService = Executors.newFixedThreadPool(4); // Fixed thread pool for concurrent tasks
+        this.searchCriteria = searchCriteria;
     }
 
-    // Method to shut down the executor service
-    public void shutdown() {
-        executorService.shutdown();
+    @Override
+    public void run() {
+        try {
+            if (searchCriteria.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                searchResults = searchByDate(searchCriteria);
+            } else {
+                searchResults = searchByEquipment(searchCriteria);
+            }
+
+            // Print search results
+            if (searchResults.isEmpty()) {
+                System.out.println("No results found for: " + searchCriteria);
+            } else {
+                System.out.println("Search results for " + searchCriteria + ":");
+                searchResults.forEach(System.out::println);
+            }
+        } catch (EMSException e) {
+            System.err.println("An error occurred during search: " + e.getMessage());
+        }
     }
 
-    // Search method with concurrency
-    public Future<List<String>> searchByDateAsync(String date) {
-        return executorService.submit(() -> searchByDate(date));
-    }
-
-    public Future<List<String>> searchByEquipmentAsync(String equipmentName) {
-        return executorService.submit(() -> searchByEquipment(equipmentName));
-    }
-
-    // Method to search log files by date using a regular expression
+    // Method to search by date
     public List<String> searchByDate(String date) throws EMSException {
         List<String> matchedFiles = new ArrayList<>();
         String regex = ".*" + date + ".*\\.log$";
@@ -85,7 +92,7 @@ public class LogSearcher {
         return matchedFiles;
     }
 
-    // Method to search log files by equipment name using a regular expression
+    // Method to search by equipment name
     public List<String> searchByEquipment(String equipmentName) throws EMSException {
         List<String> matchedFiles = new ArrayList<>();
         String regex = ".*" + equipmentName + ".*\\.log$";
