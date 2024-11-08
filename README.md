@@ -13,7 +13,8 @@ This project implements a log search and battery management system for an energy
   - [Charge the Battery](#charge-the-battery)
   - [Use Energy from the Battery](#use-energy-from-the-battery)
 - [Concurrency](#concurrency)
-- [Link and Nat no.](#link-and-mat-no)
+- [Link and Matriculation no.](#link-and-mat-no)
+- 
 
 ## Features
 - **Search log files** by date or equipment name.
@@ -106,7 +107,7 @@ dateSearcher.start();  // Start the thread for searching by date
 LogSearcher equipmentSearcher = new LogSearcher(logDirectory, metadata, searchEquipment);
 equipmentSearcher.start();  // Start the thread for searching by equipment
 ```
-## Link and Nat no.
+## Link and Matriculation no.
 Stevenson Isaac - 7222017 
 
 Screencast Link HA Concurrency
